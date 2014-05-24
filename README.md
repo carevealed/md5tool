@@ -39,3 +39,23 @@ This script assumes the following naming scheme for the .md5 checksum files
   - Replace `MYDIRECTORY` with the name of the directory you want to be checked.
   - To save time, you can *drag and drop* a directory from the **Finder** into the terminal window to specify the directory path.
 
+## Basic instructions for Microsoft Windows
+
+ 1. Windows does not have Python installed by default, so first download and install it from [python.org](http://www.python.org/download/).
+  - **md5tool.py** has been primarily tested with *Python 2.7*, but may also work with *Python 3.4*.
+ 2. Next, it is necessary to update the Windows PATH variable so that python can be located from the command line.
+  - Open the Control Panel from the Start Menu and go to:
+     * System Settings
+     * Advanced System Settings
+     * Advanced Tab
+     * Environmental Settings (extra menu at the bottom)
+  - Add a new User Variable Path:
+     * `C:\Python27`
+     * (If you have a different version of Python, adjust the path name accordingly)
+ 3. Download the *ZIP archive* from github, or clone the repository with **git**.
+ 4. Place the **md5tool.py** script somewhere convenient, e.g. a `scripts` directory on your `C:` drive.
+ 5. Open the Windows **CMD** program to get a command line window.
+ 6. Type the following into the command line window to check files in a directory:
+
+        python C:\scripts\md5tool.py check MYDIRECTORY
+  - Replace `MYDIRECTORY` with the name of the directory you want to be checked.
