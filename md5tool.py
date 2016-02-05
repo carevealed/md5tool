@@ -96,7 +96,7 @@ def generate_md5_file_for(filename, md5_filename):
     sys.stdout.flush()
 
 
-def get_file_info_dictionaries(dirs):
+def get_file_info_dictionaries(dirs, options):
     """Walk the directories recursively and match up .md5 files to the files they describe."""
 
     # Recursively walk the directories, trying to pair up the .md5 files
@@ -121,13 +121,17 @@ def get_file_info_dictionaries(dirs):
     files_found = 0
     md5_found = 0
     both_found = 0
-    for d in file_info_dicts.itervalues():
+    for file_name, d in file_info_dicts.iteritems():
         if d['md5'] and d['file']:
             both_found += 1
         elif d['file']:
             files_found += 1
+            if options.verbose:
+                print 'File "{0}" has no matching .md5 file.'.format(file_name)
         elif d['md5']:
             md5_found += 1
+            if options.verbose:
+                print 'MD5 File "{0}.md5" has no matching file.'.format(file_name)
 
     print "Found {0} files with matching .md5 files.".format(both_found)
     print "Found {0} .md5 files with no matching file.".format(md5_found)
@@ -139,18 +143,25 @@ def get_file_info_dictionaries(dirs):
 def parse_args():
     """Read command line arguments and determine operation and directories """
 
+    # Define the options taken by the script
+    parser = optparse.OptionParser(
+        usage="\n\t%prog check dir1 [dir2, dir3,...]\nOR\n\t%prog generate dir1 [dir2, dir3,...]",
+    )
+    parser.add_option(
+        "-v", "--verbose", action="store_true", dest="verbose",
+        default=False, help="Print additional information for investigating missing files.",
+    )
+
     # Parse options and read directory arguments from the command line
-    optionparser = optparse.OptionParser(
-        usage="\n\t%prog check dir1 [dir2, dir3,...]\nOR\n\t%prog generate dir1 [dir2, dir3,...]")
-    (options, args) = optionparser.parse_args()
+    (options, args) = parser.parse_args()
     if len(args) < 2:
-        optionparser.print_help()
+        parser.print_help()
         sys.exit(1)
 
     # Check that the first argument is an operation to apply
     operation = args[0]
     if operation not in ('check', 'generate'):
-        optionparser.print_help()
+        parser.print_help()
         sys.exit(1)
 
     # Check that the rest of the arguments are valid directories
@@ -160,14 +171,14 @@ def parse_args():
             print "ERROR: {0} is not a valid directory.".format(dir)
             sys.exit(1)
 
-    return operation, dirs
+    return operation, dirs, options
 
 
 def main():
     """Main procedure."""
-    operation, dirs = parse_args()
+    operation, dirs, options = parse_args()
 
-    file_info_dicts = get_file_info_dictionaries(dirs)
+    file_info_dicts = get_file_info_dictionaries(dirs, options)
     print("===============================================================================")
 
     if operation == 'check':
