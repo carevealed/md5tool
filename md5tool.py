@@ -7,11 +7,15 @@ import os
 import os.path
 import sys
 
+
 def read_hash_from_md5_file(md5_filename):
     """This function reads a hash out of a .md5 file."""
-    
+
     with open(md5_filename) as file:
         for line in file:
+            # this returns the hash if the MD5 file contained the hash only
+            if len(line.rstrip()) == 32:
+                return line.rstrip()
             # skip blank lines and semicolons
             if not line or line[0] == ';':
                 continue
@@ -21,10 +25,11 @@ def read_hash_from_md5_file(md5_filename):
                 possible_hash = line[:pos].strip().lower()
                 if len(possible_hash) == 32:
                     return possible_hash
-        
-    return None # failed to find the hash
 
-def generate_md5_hash(filename, block_size=2**20, progress_blocks=128):
+    return None  # failed to find the hash
+
+
+def generate_md5_hash(filename, block_size=2 ** 20, progress_blocks=128):
     """This function generates an md5 hash for a given file."""
 
     md5 = hashlib.md5()
@@ -44,6 +49,7 @@ def generate_md5_hash(filename, block_size=2**20, progress_blocks=128):
             blocks += 1
     return md5.hexdigest()
 
+
 def check_against_md5_file(filename, md5_filename):
     """This function checks a filename against its md5 filename."""
 
@@ -58,7 +64,7 @@ def check_against_md5_file(filename, md5_filename):
 
     # Generate the actual hash for the file being protected
     actual_hash = generate_md5_hash(filename)
-    
+
     # Print out success or failure messages
     error = None
     if actual_hash == expected_hash:
@@ -73,13 +79,14 @@ def check_against_md5_file(filename, md5_filename):
 
     return error
 
+
 def generate_md5_file_for(filename, md5_filename):
     """This function generates an md5 file for an existing file."""
     try:
         output_file = open(md5_filename, 'w')
     except IOError:
         sys.stdout.write("ERROR: can't write to file {0}\n".format(md5_filename))
-    
+
     generated_hash = generate_md5_hash(filename)
 
     output_file.write("{0} *{1}\n".format(generated_hash, os.path.basename(filename)))
@@ -87,6 +94,7 @@ def generate_md5_file_for(filename, md5_filename):
 
     sys.stdout.write("\rDONE        {0}\n".format(filename))
     sys.stdout.flush()
+
 
 def get_file_info_dictionaries(dirs):
     """Walk the directories recursively and match up .md5 files to the files they describe."""
@@ -102,7 +110,7 @@ def get_file_info_dictionaries(dirs):
                     key = full_file_path[:-4]
                 else:
                     key = full_file_path
-                
+
                 d = file_info_dicts.setdefault(key, dict(file=False, md5=False))
                 if is_md5_file:
                     d['md5'] = True
@@ -120,12 +128,13 @@ def get_file_info_dictionaries(dirs):
             files_found += 1
         elif d['md5']:
             md5_found += 1
-            
+
     print "Found {0} files with matching .md5 files.".format(both_found)
     print "Found {0} .md5 files with no matching file.".format(md5_found)
     print "Found {0} files with no matching .md5 file.".format(files_found)
-    
+
     return file_info_dicts
+
 
 def parse_args():
     """Read command line arguments and determine operation and directories """
@@ -143,7 +152,7 @@ def parse_args():
     if operation not in ('check', 'generate'):
         optionparser.print_help()
         sys.exit(1)
-        
+
     # Check that the rest of the arguments are valid directories
     dirs = args[1:]
     for dir in dirs:
@@ -152,6 +161,7 @@ def parse_args():
             sys.exit(1)
 
     return operation, dirs
+
 
 def main():
     """Main procedure."""
@@ -186,6 +196,7 @@ def main():
             if d['file'] and not d['md5']:
                 generate_md5_file_for(filename, filename + '.md5')
         print("===============================================================================")
+
 
 if __name__ == "__main__":
     main()
