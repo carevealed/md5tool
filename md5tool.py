@@ -179,7 +179,7 @@ def main():
     operation, dirs, options = parse_args()
 
     file_info_dicts = get_file_info_dictionaries(dirs, options)
-    print("===============================================================================")
+    print("===============================================================")
 
     if operation == 'check':
         # Check each pair of matching files
@@ -191,7 +191,7 @@ def main():
                 if error:
                     errors.append(error)
                 num_checked += 1
-        print("===============================================================================")
+        print("===============================================================")
         print("SUMMARY")
         print("{0} files checked.".format(num_checked))
         print("{0} had errors.".format(len(errors)))
@@ -199,14 +199,14 @@ def main():
             print(filename)
             print("  expected hash  {0}".format(expected_hash))
             print("  actual hash is {0}".format(actual_hash))
-        print("===============================================================================")
+        print("===============================================================")
 
     elif operation == 'generate':
         # Generate an .md5 file for files which don't have one
         for filename, d in sorted(iter(file_info_dicts.items())):
             if d['file'] and not d['md5']:
                 generate_md5_file_for(filename, filename + '.md5')
-        print("===============================================================================")
+        print("===============================================================")
 
 
 if __name__ == "__main__":
