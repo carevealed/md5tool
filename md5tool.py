@@ -149,7 +149,8 @@ def parse_args():
     )
     parser.add_option(
         "-v", "--verbose", action="store_true", dest="verbose",
-        default=False, help="Print additional information for investigating missing files.",
+        default=False,
+        help="Print additional information for investigating missing files.",
     )
 
     # Parse options and read directory arguments from the command line
