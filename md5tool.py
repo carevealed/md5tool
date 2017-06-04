@@ -58,8 +58,8 @@ def check_against_md5_file(filename, md5_filename):
 
     # If we couldn't read the expected hash, return an error
     if expected_hash is None:
-        print "ERROR     {0}".format(filename)
-        print "Could not read a valid md5 hash from {0}".format(md5_filename)
+        print("ERROR     {0}".format(filename))
+        print("Could not read a valid md5 hash from {0}".format(md5_filename))
         return (filename, 'could not read from .md5 file', 'not generated')
 
     # Generate the actual hash for the file being protected
@@ -73,8 +73,8 @@ def check_against_md5_file(filename, md5_filename):
     else:
         sys.stdout.write("\rERROR     {0}\n".format(filename))
         sys.stdout.flush()
-        print "  expected hash  {0}".format(expected_hash)
-        print "  actual hash is {0}".format(actual_hash)
+        print("  expected hash  {0}".format(expected_hash))
+        print("  actual hash is {0}".format(actual_hash))
         error = (filename, expected_hash, actual_hash)
 
     return error
@@ -121,21 +121,21 @@ def get_file_info_dictionaries(dirs, options):
     files_found = 0
     md5_found = 0
     both_found = 0
-    for file_name, d in file_info_dicts.iteritems():
+    for file_name, d in iter(file_info_dicts.items()):
         if d['md5'] and d['file']:
             both_found += 1
         elif d['file']:
             files_found += 1
             if options.verbose:
-                print 'File "{0}" has no matching .md5 file.'.format(file_name)
+                print('File "{0}" has no matching .md5 file.'.format(file_name))
         elif d['md5']:
             md5_found += 1
             if options.verbose:
-                print 'MD5 File "{0}.md5" has no matching file.'.format(file_name)
+                print('MD5 File "{0}.md5" has no matching file.'.format(file_name))
 
-    print "Found {0} files with matching .md5 files.".format(both_found)
-    print "Found {0} .md5 files with no matching file.".format(md5_found)
-    print "Found {0} files with no matching .md5 file.".format(files_found)
+    print("Found {0} files with matching .md5 files.".format(both_found))
+    print("Found {0} .md5 files with no matching file.".format(md5_found))
+    print("Found {0} files with no matching .md5 file.".format(files_found))
 
     return file_info_dicts
 
@@ -149,7 +149,8 @@ def parse_args():
     )
     parser.add_option(
         "-v", "--verbose", action="store_true", dest="verbose",
-        default=False, help="Print additional information for investigating missing files.",
+        default=False,
+        help="Print additional information for investigating missing files.",
     )
 
     # Parse options and read directory arguments from the command line
@@ -168,7 +169,7 @@ def parse_args():
     dirs = args[1:]
     for dir in dirs:
         if not os.path.isdir(dir):
-            print "ERROR: {0} is not a valid directory.".format(dir)
+            print("ERROR: {0} is not a valid directory.".format(dir))
             sys.exit(1)
 
     return operation, dirs, options
@@ -179,34 +180,34 @@ def main():
     operation, dirs, options = parse_args()
 
     file_info_dicts = get_file_info_dictionaries(dirs, options)
-    print("===============================================================================")
+    print("===============================================================")
 
     if operation == 'check':
         # Check each pair of matching files
         num_checked = 0
         errors = []
-        for filename, d in sorted(file_info_dicts.iteritems()):
+        for filename, d in sorted(iter(file_info_dicts.items())):
             if d['file'] and d['md5']:
                 error = check_against_md5_file(filename, filename + '.md5')
                 if error:
                     errors.append(error)
                 num_checked += 1
-        print("===============================================================================")
+        print("===============================================================")
         print("SUMMARY")
         print("{0} files checked.".format(num_checked))
         print("{0} had errors.".format(len(errors)))
         for (filename, expected_hash, actual_hash) in errors:
-            print filename
-            print "  expected hash  {0}".format(expected_hash)
-            print "  actual hash is {0}".format(actual_hash)
-        print("===============================================================================")
+            print(filename)
+            print("  expected hash  {0}".format(expected_hash))
+            print("  actual hash is {0}".format(actual_hash))
+        print("===============================================================")
 
     elif operation == 'generate':
         # Generate an .md5 file for files which don't have one
-        for filename, d in sorted(file_info_dicts.iteritems()):
+        for filename, d in sorted(iter(file_info_dicts.items())):
             if d['file'] and not d['md5']:
                 generate_md5_file_for(filename, filename + '.md5')
-        print("===============================================================================")
+        print("===============================================================")
 
 
 if __name__ == "__main__":

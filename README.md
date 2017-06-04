@@ -3,6 +3,8 @@ md5tool
 
 Python script to generate or check md5 checksums recursively for files in a directory tree.
 
+It has been tested for Python versions 2.7, 3.4, and 3.6.
+
 ## Usage
 
 To search recursively for files in a directory and its subdirectories, and check files against their corresponding .md5 checksum files:
@@ -42,7 +44,6 @@ This script assumes the following naming scheme for the .md5 checksum files
 ## Basic instructions for Microsoft Windows
 
  1. Windows does not have Python installed by default, so first download and install it from [python.org](http://www.python.org/download/).
-  - **md5tool.py** has been primarily tested with *Python 2.7*. It does not work with Python 3.x due to print statement syntax.
  2. Next, it is necessary to update the Windows PATH variable so that python can be located from the command line.
   - Open the Control Panel from the Start Menu and go to:
      * System Settings
@@ -50,7 +51,7 @@ This script assumes the following naming scheme for the .md5 checksum files
      * Advanced Tab
      * Environmental Settings (extra menu at the bottom)
   - Add a new User Variable Path:
-     * `C:\Python27`
+     * `C:\Python27`, `C:\Python36`, et cetera depending on Python version.
      * (If you have a different version of Python, adjust the path name accordingly)
  3. Download the *ZIP archive* from github, or clone the repository with **git**.
  4. Place the **md5tool.py** script somewhere convenient, e.g. a `scripts` directory on your `C:` drive.
